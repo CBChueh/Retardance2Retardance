@@ -152,7 +152,7 @@ class Network(object):
     def test(self, test_Datasets):
 
         self.model.train(False)
-        Writerdir=self.pam.load_ckpt[:self.pam.load_ckpt.find('_train')]+'_test'
+        Writerdir=os.path.dirname(self.pam.load_ckpt)+'_test'
         n=0
         while os.path.isdir(Writerdir+ '-' + str(n)):
             n+=1
@@ -163,7 +163,6 @@ class Network(object):
             self.pam.alpha=0
         stats = vars(self.pam)
         stats['test_loss']=[]
-        stats['test_AnoErr']=[]
 
         denoised_dir=self.CreateSavingFolder()
 

@@ -50,7 +50,6 @@ class LoadfromFolder(Dataset):
             self.imgs=['Augmen_'+f for f in os.listdir(imgs_dir) if f.endswith(fileend) and Specfile not in f and "DOP" not in f]
         else:
             self.imgs=[f for f in os.listdir(imgs_dir) if f.endswith(fileend) and Specfile not in f and "DOP" not in f] 
-        self.imgs=self.imgs[:16]
         
         if testmode:
             # find unique target bin, each target bin find match its corresponding source bin
