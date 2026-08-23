@@ -1,0 +1,18 @@
+{
+  "train_dir": "/mnt/Data02/Chuan-Bor/Data_ML/Rotterdam_142988_12-16-2014_04-55-47_pureDIPS_Nibns_9_S1/train/Rmat_pureDIPS_OneThird_NBins_9",
+  "valid_dir": "/mnt/Data02/Chuan-Bor/Data_ML/Rotterdam_142988_12-16-2014_04-55-47_pureDIPS_Nibns_9_S1/valid/Rmat_pureDIPS_OneThird_NBins_9",
+  "learning_rate": 0.001,
+  "omega": 0.01,
+  "batch_size": 8,
+  "nb_epochs": 100,
+  "cuda": true,
+  "Trueaugmentation": true,
+  "adam": [
+    0.9,
+    0.99,
+    1e-08
+  ],
+  "trainable": true,
+  "use_multi_epochs_loader": true,
+  "addtext": "Training-100-OCT_R2R-Unet_4-w-0.01-p-0.99-tDOP-0-MMask-None-20"
+}
