@@ -45,7 +45,7 @@ class LoadfromFolder(Dataset):
         self.imgs_dir=imgs_dir
         self.p=params
         fileend=".bin"
-        Specfile="ource"
+        Specfile="source"
         if Trueaugmentation:
             self.imgs=['Augmen_'+f for f in os.listdir(imgs_dir) if f.endswith(fileend) and Specfile not in f and "DOP" not in f]
         else:
@@ -57,8 +57,8 @@ class LoadfromFolder(Dataset):
             imguniq=[]
             self.imgs.sort()
             for img in self.imgs:
-                strstart=img.rfind('Bin')
-                strpart=img[:strstart]
+                strstart=img.find('Bin')
+                strpart=img[:strstart+4]
                 if strpart not in seen:
                     imguniq.append(img)
                     seen.add(strpart)
@@ -76,13 +76,7 @@ class LoadfromFolder(Dataset):
         else:
             TrueAug=False
         img_path = os.path.join(self.imgs_dir, ImgName)
-        img_path2 = os.path.join(self.imgs_dir, ImgName)
-
-        strstart=img_path2.rfind('_Bin')
-        strend=img_path2.find('.bin')
-        strpart=img_path2[strstart+1:strend]
-
-        img_path2=img_path2.replace(strpart,'Source')
+        img_path2 = os.path.join(self.imgs_dir, ImgName).replace('target','Source')
 
         if len(img_path)>200:
             print('too long')

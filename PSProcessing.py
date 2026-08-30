@@ -3,59 +3,6 @@ import torch.linalg as LA
 import math
 from scipy import signal
 
-def makeRot(input):
-    # input.shape = [batch size, ch, width, height]
-    # permute and add dim for matrix proc in torch 
-    if input.ndim==4:
-        input=torch.permute(input,(0,2,3,1))
-
-    omega=input[...,1:].detach().clone()
-    if omega.shape[-1]<3:
-        temp=torch.zeros(omega.shape[:3],device=torch.device('cuda'))
-        temp=temp[...,None]
-        omega=torch.cat((omega,temp),3)
-
-    omega=omega[...,None]
-
-    ret=torch.norm(omega,dim=-2,keepdim=True)
-    omega=omega/ret
-
-    if input.ndim<3:
-        q=omega[0,:,None]
-        u=omega[1,:,None]
-        v=omega[2,:,None]
-    else:
-        q=omega[...,0,:,None]
-        u=omega[...,1,:,None]
-        v=omega[...,2,:,None]
-
-    w=torch.zeros(q.shape,device=torch.device('cuda'))
-
-    I=torch.eye(3,device=torch.device('cuda'))
-
-    K=torch.cat((torch.cat((w,-v,u),-2),torch.cat((v,w,-q),-2),torch.cat((-u,q,w),-2)),-1)
-    KK=torch.matmul(omega,torch.transpose(omega,-1,-2))-I
-    Out=K*torch.sin(ret)+KK*(1-torch.cos(ret))+I
-
-    return Out
-
-def makeRot3x3(input):
-    # input.shape = [q,u,v]
-    # permute and add dim for matrix proc in torch 
-    omega=input.detach().clone()
-    omega=omega[...,None]
-    ret=torch.norm(omega,dim=-2,keepdim=True)
-    omega=omega/ret
-    q=omega[...,0,:,None]
-    u=omega[...,1,:,None]
-    v=omega[...,2,:,None]
-    w=torch.zeros(q.shape)
-    I=torch.eye(3)
-    K=torch.cat((torch.cat((w,-v,u),-2),torch.cat((v,w,-q),-2),torch.cat((-u,q,w),-2)),-1)
-    KK=torch.matmul(omega,torch.transpose(omega,-1,-2))-I
-    Out=K*torch.sin(ret)+KK*(1-torch.cos(ret))+I
-    return Out[0,:,:]
-
 def RotateR(input,V):
     A=torch.tensor([[1,0,0,0,0,0],
                     [0,1,0,0,0,0],

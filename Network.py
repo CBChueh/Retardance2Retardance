@@ -32,6 +32,10 @@ class Network(object):
         self.use_cuda = torch.cuda.is_available() and self.pam.cuda
         if self.use_cuda:
             self.model=self.model.cuda()
+            self.device='cuda'
+        else:
+            self.device='cpu'
+
         if self.pam.trainable:
             self.loss=self.loss.cuda()
             self.loss2=self.loss2.cuda()
@@ -184,9 +188,11 @@ class Network(object):
 
                 img_name = test_Datasets.dataset.imgs[batch_idx]
                 fname = os.path.splitext(img_name)[0]
-                self.save_results(source,os.path.join(denoised_dir, f'{fname}-source'))
-                self.save_results(target,os.path.join(denoised_dir, f'{fname}-target'))
-                self.save_results(Output,os.path.join(denoised_dir, f'{fname}-denoised'))
+                fname = fname[:fname.find('target')]
+
+                self.save_results(source,os.path.join(denoised_dir, f'{fname}source'))
+                self.save_results(target,os.path.join(denoised_dir, f'{fname}target'))
+                self.save_results(Output,os.path.join(denoised_dir, f'{fname}denoised'))
 
                 dec = int(np.ceil(np.log10(num_batches)))
                 print('Test data {:>{dec}d} /  {:>{dec}d}'.format(batch_idx + 1, num_batches,dec=str(dec)),end=' ')
@@ -209,12 +215,12 @@ class Network(object):
         return Loss_batch_1st+Loss_batch_2nd*self.pam.alpha
 
     def Loss_1st(self,Output,target):
-        w=torch.tensor([1,1,2,2,1,2,1],device=torch.device('cuda'))[None,:,None,None]
+        w=torch.tensor([1,1,2,2,1,2,1],device=torch.device(self.device))[None,:,None,None]
         return self.loss(Output*w,target[:,:Output.shape[1]]*w)
     
     def Loss_2nd(self,k):
         RTR=PSP.RMatInnerProd(k[:,1:,:,:],k[:,1:,:,:])
-        Ivar=RTR.diagonal(offset=0,dim1=-1,dim2=-2).sum(-1)[:,:,:,None,None]/3*torch.eye(3,device=torch.device('cuda'))
+        Ivar=RTR.diagonal(offset=0,dim1=-1,dim2=-2).sum(-1)[:,:,:,None,None]/3*torch.eye(3,device=torch.device(self.device))
         return self.loss2(RTR,Ivar)
 
     def progressbar(self, ind, total):
