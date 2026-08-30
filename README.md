@@ -40,7 +40,9 @@ python train.py --train-dir ./train/ --valid-dir ./valid/ --nb-epochs 100 --batc
 ```
 During training, model checkpoints and TensorBoard logs will be automatically saved in the **`./runs/`** directory.
 
-### Inference
+### Sample Data & Inference
+
+To facilitate immediate testing, we have provided a sample single B-scan transmission vector dataset in the **`./test/`** directory/. This sample data contains the aligned source and target spectral bin **`.bin`** files (e.g., **`Train_Sym_Vol001_Frame121_Bin1_source.bin`**). Each spectral bin file utilizes a data structure of 1024 &times; 512 &times; 7 (Depth &times; A-lines &times; Channels) and is saved in **`numpy.float32`** precision.
 
 To run evaluations and denoise your testing data utilizing a saved model checkpoint, run:
 
@@ -48,4 +50,6 @@ To run evaluations and denoise your testing data utilizing a saved model checkpo
 python inference.py --test-dir ./test/ --load-ckpt ./runs/R2R_Pretrained/R2R_Pretrained.pt --cuda
 
 ```
+After inference is complete, the denoised results will be automatically saved in the **`./Results/`** directory. The output filenames will be explicitly marked with the word **`output`** (e.g., **`Train_Sym_Vol001_Frame121_Bin1_output.bin`**) so they can be easily identified.
+
 The denoised inference results will be automatically saved in the **`./Results/`** directory.
